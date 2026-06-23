@@ -1,0 +1,122 @@
+package com.veterinaria.ms_mascotas.service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.veterinaria.ms_mascotas.DTO.DuenoDTO;
+import com.veterinaria.ms_mascotas.model.Dueno;
+import com.veterinaria.ms_mascotas.repository.DuenoRepository;
+
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
+public class DuenoService {
+    @Autowired
+    private DuenoRepository duenoRepository;
+
+    public List<DuenoDTO> obtenerTodos() {
+        return duenoRepository.findAll()
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    public DuenoDTO buscarPorId(Integer id) {
+        Dueno dueno = duenoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Dueño no encontrado"));
+
+    return convertirADTO(dueno);
+    }
+
+    public DuenoDTO guardar(DuenoDTO dto) {
+    Optional<Dueno> existente = duenoRepository.findByRut(dto.getRut());
+    if(existente.isPresent()){
+        throw new RuntimeException("El rut ya existe");
+    }
+    Dueno dueno = convertirAEntidad(dto);
+    return convertirADTO(duenoRepository.save(dueno));
+    }
+
+    public Dueno actualizarDueno(Integer id, Dueno dueno) {
+        Dueno d = duenoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dueño no encontrado"));
+        d.setNombre(dueno.getNombre());
+        d.setTelefono(dueno.getTelefono());
+        return duenoRepository.save(d);
+    }
+
+    public String eliminar(Integer id) {
+        if (duenoRepository.existsById(id)) {
+            duenoRepository.deleteById(id);
+            return "Dueño eliminado exitosamente";
+        }
+        return "Dueño no encontrado";
+    }
+
+    private DuenoDTO convertirADTO(Dueno dueno) {
+        DuenoDTO dto = new DuenoDTO();
+            dto.setId(dueno.getId());
+            dto.setRut(dueno.getRut());
+            dto.setNombre(dueno.getNombre());
+            dto.setTelefono(dueno.getTelefono());
+            dto.setDireccion(dueno.getDireccion());
+            dto.setMail(dueno.getMail());
+            if (dueno.getMascotas() != null) {
+            dto.setMascotas(dueno.getMascotas()
+                        .stream()
+                        .map(m -> m.getNombre())
+                        .collect(Collectors.toList()));
+        }
+        return dto;
+    }
+
+    private Dueno convertirAEntidad(DuenoDTO dto) {
+        Dueno dueno = new Dueno();
+        dueno.setId(dto.getId());
+        dueno.setRut(dto.getRut());
+        dueno.setNombre(dto.getNombre());
+        dueno.setTelefono(dto.getTelefono());
+        dueno.setDireccion(dto.getDireccion());
+        dueno.setMail(dto.getMail());
+        return dueno;
+    }
+
+    public DuenoDTO buscarPorNombre(String nombre) {
+    Dueno dueno = duenoRepository.findByNombre(nombre)
+            .orElseThrow(() -> new RuntimeException("Dueño no encontrado"));
+    return convertirADTO(dueno);
+    }
+
+    public DuenoDTO buscarPorRut(String rut) {
+    Dueno dueno = duenoRepository.findByRut(rut)
+            .orElseThrow(() -> new RuntimeException("rut no encontrado"));
+    return convertirADTO(dueno);
+    }
+
+    public String mostrarDescuento(Integer id) {
+        Dueno dueno = duenoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dueño no encontrado"));
+        int cantidadMascotas = dueno.getMascotas().size();
+        if (cantidadMascotas >= 5) {
+            return "El dueño " + dueno.getNombre() +
+                " tiene descuento del 10%";
+        }
+        return "El dueño " + dueno.getNombre() +
+            " no tiene descuento";
+    }
+
+    public Double calcularDescuento(Integer id) {
+    Dueno dueno = duenoRepository.findById(id)
+         .orElseThrow(() -> new RuntimeException("Dueño no encontrado"));
+        int cantidadMascotas = dueno.getMascotas().size();
+        if (cantidadMascotas >= 5) {
+            return 0.10;
+        }
+        return 0.0;
+    }
+
+
+}
