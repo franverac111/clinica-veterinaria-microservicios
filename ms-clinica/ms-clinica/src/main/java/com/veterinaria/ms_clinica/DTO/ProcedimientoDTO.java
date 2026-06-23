@@ -1,7 +1,4 @@
 package com.veterinaria.ms_clinica.DTO;
-
-import java.util.List;
-
 import lombok.Data;
 
 @Data

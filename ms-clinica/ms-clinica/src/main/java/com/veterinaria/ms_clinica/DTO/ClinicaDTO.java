@@ -8,7 +8,5 @@ public class ClinicaDTO {
     private String nombreClinica;
     private String direccion;
     private String telefono;
-    private String nombreComuna;
-    private String nombreRegion;
-
+    private ComunaExternoDTO comuna;
 }

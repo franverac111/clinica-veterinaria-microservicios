@@ -46,12 +46,12 @@ public class ClinicaController {
     }
 
     @PostMapping
-    public ResponseEntity<Clinica> agregarClinica(@Valid @RequestBody Clinica clinica) {
+    public ResponseEntity<?> agregarClinica(@Valid @RequestBody Clinica clinica) {
        try {
-           Clinica guardado = clinicaService.guardarClinica(clinica);
+           Clinica guardado = clinicaService.guardar(clinica);
            return new ResponseEntity<>(guardado, HttpStatus.CREATED);
        } catch (Exception e) {
-           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+           return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
        }
     }
 
