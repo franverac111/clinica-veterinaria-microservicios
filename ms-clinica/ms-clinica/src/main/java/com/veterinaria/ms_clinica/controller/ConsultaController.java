@@ -46,9 +46,9 @@ public class ConsultaController {
     }
 
     @PostMapping
-    public ResponseEntity<Consulta> agregarConsulta(@Valid @RequestBody Consulta consulta) {
+    public ResponseEntity<ConsultaDTO> agregarConsulta(@Valid @RequestBody Consulta consulta) {
         try {
-            Consulta guardado = consultaService.guardarConsulta(consulta);
+            ConsultaDTO guardado = consultaService.guardar(consulta);
             return new ResponseEntity<>(guardado, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -65,16 +65,6 @@ public class ConsultaController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarConsulta(@PathVariable Integer id) {
-       String resultado = consultaService.eliminar(id);
-       if (resultado.contains("exitosamente")) {
-           return new ResponseEntity<>(resultado, HttpStatus.OK);
-       } else {
-           return new ResponseEntity<>(resultado, HttpStatus.NOT_FOUND);
-       }
     }
 
 

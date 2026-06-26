@@ -1,15 +1,18 @@
 package com.veterinaria.ms_clinica.service;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import com.veterinaria.ms_clinica.DTO.ClinicaDTO;
+import com.veterinaria.ms_clinica.DTO.ComunaExternoDTO;
 import com.veterinaria.ms_clinica.DTO.ConsultaDTO;
+import com.veterinaria.ms_clinica.DTO.MascotaExternoDTO;
+import com.veterinaria.ms_clinica.model.Clinica;
 import com.veterinaria.ms_clinica.model.Consulta;
 import com.veterinaria.ms_clinica.repository.ConsultaRepository;
-
 import jakarta.transaction.Transactional;
+
 
 @Service
 @Transactional
@@ -17,46 +20,32 @@ public class ConsultaService {
     @Autowired
     private ConsultaRepository consultaRepository;
 
-    private ConsultaDTO convertirADTO(Consulta consulta) {
-      ConsultaDTO dto = new ConsultaDTO();
-      dto.setId(consulta.getId());
-      dto.setFecha(consulta.getFecha());
-      dto.setMotivo(consulta.getMotivo());
-      dto.setDiagnostico(consulta.getDiagnostico());
-      dto.setMascotaId(consulta.getMascotaId());
-      dto.setNombreVet(
-            consulta.getVeterinario().getNombreVeterinario());
-      dto.setEspecialidadVet(
-            consulta.getVeterinario().getEspecialidad());
-      return dto;
-    }
+    @Autowired
+    private ConsultaValidaciones consultaValidaciones;
+
+   
 
     public List<ConsultaDTO> obtenerTodos() {
        return consultaRepository.findAll()
                 .stream()
-                .map(this::convertirADTO)
+                .map(consultaValidaciones::convertirADTO)
                 .toList();
     }
 
     public ConsultaDTO buscarPorId(Integer id) {
        Consulta consulta = consultaRepository.findById(id)
            .orElseThrow(() -> new RuntimeException("la consulta no existe"));
-       return convertirADTO(consulta);
+       return consultaValidaciones.convertirADTO(consulta);
     }
 
-    public String eliminar(Integer id) {
-     try {
-           Consulta consulta = consultaRepository.findById(id)
-                   .orElseThrow(() -> new RuntimeException("¡Imposible eliminar! la consulta con ID " + id + " no existe."));
-           consultaRepository.delete(consulta);
-           return "la consulta '" + consulta.getId() + "' ha sido retirada exitosamente.";
-       } catch (RuntimeException e) {
-           return e.getMessage();
-       }
-    }
 
-    public Consulta guardarConsulta(Consulta consulta) {
-       return consultaRepository.save(consulta);
+
+    public ConsultaDTO guardar(Consulta consulta) {
+        if (consultaValidaciones.existeMascota(consulta.getMascotaId())==false) {
+            throw new RuntimeException("La mascota indicada no existe");
+         }
+        Consulta guardado = consultaRepository.save(consulta);
+        return consultaValidaciones.convertirADTO(guardado);
     }
 
     public Consulta actualizarConsulta(Integer id, Consulta con) {
@@ -74,6 +63,9 @@ public class ConsultaService {
                 consulta.setDiagnostico(con.getDiagnostico());
             }
             if (con.getMascotaId() != null) {
+                if (consultaValidaciones.existeMascota(con.getMascotaId())==false) {
+                throw new RuntimeException("La comuna indicada no existe");
+                }
                 consulta.setMascotaId(con.getMascotaId());
             }
             if (con.getVeterinario() != null) {

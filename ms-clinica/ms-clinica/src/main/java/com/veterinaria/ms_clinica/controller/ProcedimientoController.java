@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/procedimientos")
 public class ProcedimientoController {
-     @Autowired
+    @Autowired
     private ProcedimientoService procedimientoService;
 
     @GetMapping

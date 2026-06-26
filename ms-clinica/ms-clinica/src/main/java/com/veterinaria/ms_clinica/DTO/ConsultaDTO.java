@@ -10,12 +10,9 @@ public class ConsultaDTO {
     private LocalDate fecha;
     private String motivo;
     private String diagnostico;
-    private Integer mascotaId;
-    private String nombreMascota;
-    private String sexo;
-    private Integer edad;
-    private String raza;
-    private String nombreVet;
-    private String especialidadVet;
+    private String nomVet;
+    private String especialidad;
+    private MascotaExternoDTO mascota;
+
 
 }

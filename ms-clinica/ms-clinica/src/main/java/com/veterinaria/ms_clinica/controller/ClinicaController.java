@@ -48,7 +48,7 @@ public class ClinicaController {
     @PostMapping
     public ResponseEntity<?> agregarClinica(@Valid @RequestBody Clinica clinica) {
        try {
-           Clinica guardado = clinicaService.guardar(clinica);
+           ClinicaDTO guardado = clinicaService.guardar(clinica);
            return new ResponseEntity<>(guardado, HttpStatus.CREATED);
        } catch (Exception e) {
            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
@@ -64,18 +64,6 @@ public class ClinicaController {
            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
        }
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarClinica(@PathVariable Integer id) {
-       String resultado = clinicaService.eliminar(id);
-      
-       // Si el mensaje contiene "exitosamente", es un éxito
-       if (resultado.contains("exitosamente")) {
-           return new ResponseEntity<>(resultado, HttpStatus.OK);
-       } else {
-           return new ResponseEntity<>(resultado, HttpStatus.NOT_FOUND);
-       }
-   }
 
 
 }
