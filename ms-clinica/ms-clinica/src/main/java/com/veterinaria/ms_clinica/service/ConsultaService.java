@@ -2,13 +2,7 @@ package com.veterinaria.ms_clinica.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import com.veterinaria.ms_clinica.DTO.ClinicaDTO;
-import com.veterinaria.ms_clinica.DTO.ComunaExternoDTO;
 import com.veterinaria.ms_clinica.DTO.ConsultaDTO;
-import com.veterinaria.ms_clinica.DTO.MascotaExternoDTO;
-import com.veterinaria.ms_clinica.model.Clinica;
 import com.veterinaria.ms_clinica.model.Consulta;
 import com.veterinaria.ms_clinica.repository.ConsultaRepository;
 import jakarta.transaction.Transactional;
@@ -22,8 +16,6 @@ public class ConsultaService {
 
     @Autowired
     private ConsultaValidaciones consultaValidaciones;
-
-   
 
     public List<ConsultaDTO> obtenerTodos() {
        return consultaRepository.findAll()

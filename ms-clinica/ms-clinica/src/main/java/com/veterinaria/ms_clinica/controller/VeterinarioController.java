@@ -46,9 +46,9 @@ public class VeterinarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Veterinario> agregarVeterinario(@Valid @RequestBody Veterinario veterinario) {
+    public ResponseEntity<VeterinarioDTO> agregarVeterinario(@Valid @RequestBody Veterinario veterinario) {
        try {
-           Veterinario guardado = veterinarioService.guardarVeterinario(veterinario);
+           VeterinarioDTO guardado = veterinarioService.guardarVeterinario(veterinario);
            return new ResponseEntity<>(guardado, HttpStatus.CREATED);
        } catch (Exception e) {
            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

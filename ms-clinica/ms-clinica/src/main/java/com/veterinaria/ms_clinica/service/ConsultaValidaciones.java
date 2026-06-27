@@ -1,10 +1,7 @@
 package com.veterinaria.ms_clinica.service;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.veterinaria.ms_clinica.DTO.ComunaExternoDTO;
 import com.veterinaria.ms_clinica.DTO.ConsultaDTO;
 import com.veterinaria.ms_clinica.DTO.MascotaExternoDTO;
 import com.veterinaria.ms_clinica.model.Consulta;

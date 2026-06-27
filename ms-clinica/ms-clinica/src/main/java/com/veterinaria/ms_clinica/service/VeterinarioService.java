@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.veterinaria.ms_clinica.DTO.VeterinarioDTO;
+import com.veterinaria.ms_clinica.model.Consulta;
 import com.veterinaria.ms_clinica.model.Veterinario;
 import com.veterinaria.ms_clinica.repository.VeterinarioRepository;
 
@@ -17,34 +18,22 @@ import jakarta.transaction.Transactional;
 public class VeterinarioService {
     @Autowired
     private VeterinarioRepository veterinarioRepository;
+    
+    @Autowired
+    private VeterinarioValidaciones veterinarioValidaciones;
 
-    private VeterinarioDTO convertirADTO(Veterinario veterinario) {
-       VeterinarioDTO dto = new VeterinarioDTO();
-       dto.setId(veterinario.getId());
-       dto.setNombre(veterinario.getNombreVeterinario());
-       dto.setTelefono(veterinario.getTelefono());
-       dto.setEspecialidad(veterinario.getEspecialidad());
-
-       if (veterinario.getConsultas() != null) {//da el total de consultas si esque hay 
-        dto.setTotalConsultas(veterinario.getConsultas().size()) ;
-       }
-       else {
-          dto.setTotalConsultas(0);//si no hay consultas muestra 0
-            }
-              return dto;
-    }
 
     public List<VeterinarioDTO> obtenerTodos() {
        return veterinarioRepository.findAll()
                 .stream()
-                .map(this::convertirADTO)
+                .map(veterinarioValidaciones::convertirADTO)
                 .toList();
     }
 
     public VeterinarioDTO buscarPorId(Integer id) {
        Veterinario veterinario = veterinarioRepository.findById(id)
           .orElseThrow(() -> new RuntimeException("veterinario no encontrado"));
-       return convertirADTO(veterinario);
+       return veterinarioValidaciones.convertirADTO(veterinario);
     }
 
     
@@ -59,8 +48,9 @@ public class VeterinarioService {
        }
     }
 
-    public Veterinario guardarVeterinario(Veterinario veterinario) {
-       return veterinarioRepository.save(veterinario);
+    public VeterinarioDTO guardarVeterinario(Veterinario veterinario) {
+       Veterinario guardado = veterinarioRepository.save(veterinario);
+        return veterinarioValidaciones.convertirADTO(guardado);
     }
 
     public Veterinario actualizarVeterinario(Integer id,Veterinario vet){
@@ -85,7 +75,7 @@ public class VeterinarioService {
             List<Veterinario> veterinarios = veterinarioRepository.findByEspecialidad(especialidad);
             List<VeterinarioDTO> listaDTO = new ArrayList<>();
          for (Veterinario veterinario : veterinarios) {
-                listaDTO.add(convertirADTO(veterinario));
+                listaDTO.add(veterinarioValidaciones.convertirADTO(veterinario));
             }
         return listaDTO;
     }

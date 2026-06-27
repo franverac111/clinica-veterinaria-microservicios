@@ -15,30 +15,21 @@ import com.veterinaria.ms_clinica.repository.PagoRepository;
 public class PagoService {
     @Autowired
     private PagoRepository pagoRepository;
+
+    private PagoValidaciones pagoValidaciones;
      
-    private PagoDTO convertirADTO(Pago pago) {
-        PagoDTO dto = new PagoDTO();
-        dto.setId(pago.getId());
-        dto.setFecha(pago.getFecha());
-        dto.setMonto(pago.getMonto());
-        dto.setMetodoPago(pago.getMetodoPago());
-        if (pago.getConsulta() != null) {
-            dto.setConsultaId(pago.getConsulta().getId());
-        }
-        return dto;
-    }
 
     public List<PagoDTO> obtenerTodos() {
        return pagoRepository.findAll()
                 .stream()
-                .map(this::convertirADTO)
+                .map(pagoValidaciones::convertirADTO)
                 .toList();
     }
 
     public PagoDTO buscarPorId(Integer id) {
        Pago pago = pagoRepository.findById(id)
            .orElseThrow(() -> new RuntimeException("el pago no existe"));
-       return convertirADTO(pago);
+       return pagoValidaciones.convertirADTO(pago);
     }
 
     public String eliminar(Integer id) {
