@@ -1,3 +1,45 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: clinica-service
+              uri: lb://ms-clinica
+              predicates:
+                - Path=/api/v1/clinica/**
+
+            - id: mascotas-service
+              uri: lb://ms-mascotas
+              predicates:
+                - Path=/api/v1/mascotas/**
+
+            - id: ubicacion-service
+              uri: lb://ms-ubicacion
+              predicates:
+                - Path=/api/v1/ubicacion/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone:
+       http://localhost:8761/eureka/
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+    urls:
+      - name: Microservicio ms-clinica
+        url: /ms-clinica/api-docs
+      - name: Microservicio ms-mascotas
+        url: /ms-mascotas/api-docs
+      - name: Microservicio ms-ubicacion
+        url: /ms-ubicacion/api-docs
+  api-docs:
+    enabled: true
