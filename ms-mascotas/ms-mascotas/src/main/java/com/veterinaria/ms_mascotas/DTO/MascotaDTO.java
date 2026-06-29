@@ -1,5 +1,7 @@
 package com.veterinaria.ms_mascotas.DTO;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -11,5 +13,5 @@ public class MascotaDTO {
     private String especie;
     private String raza;
     private String dueno;
-
+    private List<RegionDTO> ubicacion;
 }

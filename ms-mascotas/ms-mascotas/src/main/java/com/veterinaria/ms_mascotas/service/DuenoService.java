@@ -110,7 +110,7 @@ public class DuenoService {
 
     public Double calcularDescuento(Integer id) {
     Dueno dueno = duenoRepository.findById(id)
-         .orElseThrow(() -> new RuntimeException("Dueño no encontrado"));
+        .orElseThrow(() -> new RuntimeException("Dueño no encontrado"));
         int cantidadMascotas = dueno.getMascotas().size();
         if (cantidadMascotas >= 5) {
             return 0.10;

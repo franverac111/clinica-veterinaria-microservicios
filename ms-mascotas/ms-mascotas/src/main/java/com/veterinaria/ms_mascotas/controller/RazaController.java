@@ -25,7 +25,7 @@ public class RazaController {
     @Autowired
     private RazaService razaService;
 
-         @GetMapping
+    @GetMapping
     public ResponseEntity<List<RazaDTO>> listar() {
         return new ResponseEntity<>(
                 razaService.obtenerTodos(),

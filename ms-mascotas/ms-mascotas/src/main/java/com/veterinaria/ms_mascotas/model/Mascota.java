@@ -53,4 +53,6 @@ public class Mascota {
     @JoinColumn(name = "dueno_id", nullable = false)
     private Dueno dueno;
 
+    
+
 }

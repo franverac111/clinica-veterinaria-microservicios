@@ -32,11 +32,11 @@ public class RegionService {
     }
 
     public RegionDTO guardar(RegionDTO dto) {
-       String nombreRegion = dto.getNombreRegion().trim();
-      if (regionRepository.existsByNombreRegionIgnoreCase(nombreRegion)) {
-        throw new RuntimeException("La región ya existe");
-      }
-      Region region = new Region();
+        String nombreRegion = dto.getNombreRegion().trim();
+        if (regionRepository.existsByNombreRegionIgnoreCase(nombreRegion)) {
+            throw new RuntimeException("La región ya existe");
+        }
+        Region region = new Region();
         region.setNombreRegion(nombreRegion);
         return convertirADTO(regionRepository.save(region));
     }
