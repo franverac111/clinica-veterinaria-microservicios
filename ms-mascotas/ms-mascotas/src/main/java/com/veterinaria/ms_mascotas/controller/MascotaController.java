@@ -3,9 +3,8 @@ package com.veterinaria.ms_mascotas.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.veterinaria.ms_mascotas.DTO.MascotaDTO;
 import com.veterinaria.ms_mascotas.model.Mascota;
 import com.veterinaria.ms_mascotas.service.MascotaService;
+import com.veterinaria.ms_mascotas.service.DuenoService;
 
 import jakarta.validation.Valid;
 
@@ -24,6 +24,9 @@ public class MascotaController {
 
     @Autowired
     private MascotaService mascotaService;
+
+    @Autowired
+    private DuenoService duenoService;
 
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<MascotaDTO>>> listar() {
@@ -57,17 +60,27 @@ public class MascotaController {
     }
 
     @PostMapping
-    public ResponseEntity<Mascota> guardar(@Valid @RequestBody Mascota mascota) {
+    public ResponseEntity<MascotaDTO> guardar(@Valid @RequestBody Mascota mascota) {
         return new ResponseEntity<>(mascotaService.guardarMascota(mascota), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Mascota> actualizar(@PathVariable Integer id,@Valid @RequestBody Mascota mascota) {
-        return new ResponseEntity<>(mascotaService.actualizarMascota(id, mascota), HttpStatus.OK);
+    public ResponseEntity<MascotaDTO> actualizar(@PathVariable Integer id,@Valid @RequestBody Mascota mascota) {
+        return ResponseEntity.ok(mascotaService.actualizarMascota(id, mascota));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         return new ResponseEntity<>(mascotaService.eliminar(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/descuento/{id}")
+    public ResponseEntity<Double> calcularDescuento(@PathVariable Integer id) {
+        try {
+            Double descuento = duenoService.calcularDescuento(id);
+            return ResponseEntity.ok(descuento);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -54,13 +54,6 @@ public class DuenoController {
                 HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminar( @PathVariable Integer id) {
-        return new ResponseEntity<>(
-                duenoService.eliminar(id),
-                HttpStatus.OK);
-    }
-
     @GetMapping("/nombre/{nombre}")
     public ResponseEntity<DuenoDTO> buscarPorNombre(@PathVariable String nombre) {
         return new ResponseEntity<>(

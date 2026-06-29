@@ -48,14 +48,6 @@ public class DuenoService {
         return duenoRepository.save(d);
     }
 
-    public String eliminar(Integer id) {
-        if (duenoRepository.existsById(id)) {
-            duenoRepository.deleteById(id);
-            return "Dueño eliminado exitosamente";
-        }
-        return "Dueño no encontrado";
-    }
-
     private DuenoDTO convertirADTO(Dueno dueno) {
         DuenoDTO dto = new DuenoDTO();
             dto.setId(dueno.getId());
