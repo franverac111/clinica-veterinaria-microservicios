@@ -1,0 +1,24 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: gateway-server
+
+  cloud:
+    gateway:
+      routes:
+        - id: mascotas
+          uri: lb://ms-mascotas
+          predicates:
+            - Path=/mascotas/**
+
+        - id: ubicacion
+          uri: lb://ms-ubicacion
+          predicates:
+            - Path=/ubicacion/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
